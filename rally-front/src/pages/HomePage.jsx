@@ -28,7 +28,7 @@ function HomePage() {
         </a>
       </div>
       <h1>Mi front experimental</h1>
-      <h2 className="">Practicando con pokemons</h2>
+      <h2 className="">Practicando con pokemons, ¿llegaremos al final? O no</h2>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

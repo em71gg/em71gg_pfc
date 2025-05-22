@@ -1,0 +1,113 @@
+version: "3.9"
+
+services:
+  # Laravel Producción
+  laravel-prod:
+    build:
+      context: ./rally-back
+      dockerfile: Dockerfile
+    image: laravel-app-prod
+    expose:
+      - "8000"
+    env_file:
+      - ./rally-back/.env
+    depends_on:
+      - mariadb
+    profiles: ["prod"]
+
+  # Laravel Desarrollo
+  laravel-dev:
+    build:
+      context: ./rally-back
+      dockerfile: Dockerfile.dev
+    image: laravel-app-dev
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./rally-back:/app
+    env_file:
+      - ./rally-back/.env
+    depends_on:
+      - mariadb
+    develop:
+      watch:
+        - action: sync
+          path: ./rally-back
+          target: /app
+    profiles: ["dev"]
+
+  # React Producción
+  react-prod:
+    build:
+      context: ./rally-front
+      dockerfile: Dockerfile
+    image: react-app-prod
+    expose:
+      - "8080"
+    profiles: ["prod"]
+
+  # React Desarrollo
+  react-dev:
+    build:
+      context: ./rally-front
+      dockerfile: Dockerfile.dev
+    image: react-app-dev
+    ports:
+      - "5173:5173"
+    develop:
+      watch:
+        - action: sync
+          path: ./rally-front
+          target: /app
+    profiles: ["dev"]
+
+  # NGINX para producción
+  nginx-prod:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - laravel-prod
+      - react-prod
+    profiles: ["prod"]
+
+  # NGINX para desarrollo
+  nginx-dev:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - laravel-dev
+      - react-dev
+    profiles: ["dev"]
+
+  # MariaDB (compartida)
+  mariadb:
+    image: mariadb:11
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  # Adminer (opcional)
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mariadb
+    profiles: ["dev", "prod"]
+
+volumes:
+  mariadb_data:
