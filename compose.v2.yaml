@@ -1,4 +1,4 @@
-
+version: "3.9"
 
 services:
   # Laravel Producción
@@ -26,6 +26,8 @@ services:
     image: laravel-app-dev
     ports:
       - "8001:8000"
+    volumes:
+      - ./rally-back:/app
     env_file:
       - ./rally-back/.env
     depends_on:
