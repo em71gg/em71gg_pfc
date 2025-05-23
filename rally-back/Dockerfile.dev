@@ -1,9 +1,24 @@
-FROM chainguard/laravel:dev
+FROM cgr.dev/chainguard/laravel:latest-dev
 
 WORKDIR /app
 
+# Copia el código fuente
 COPY . .
 
+USER root
+# Da permisos adecuados para evitar errores de Laravel en tiempo de build
+RUN mkdir -p storage/logs bootstrap/cache && chmod -R 777 storage bootstrap/cache
+
+# Instala dependencias de Composer (modo desarrollo)
 RUN composer install
 
+
+# Copia el script de permisos y lo hace ejecutable
+#COPY fix-permissions.sh /usr/local/bin/fix-permissions.sh
+#RUN chmod +x /usr/local/bin/fix-permissions.sh
+
+# Ejecuta el script de permisos y lanza el servidor de desarrollo
+#CMD ["/bin/sh", "-c", "fix-permissions.sh && php artisan serve --host=0.0.0.0 --port=8000"]
+
+# Ejecuta el servidor de desarrollo directamente
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

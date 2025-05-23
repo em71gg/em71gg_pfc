@@ -2,7 +2,7 @@ import axios from "axios";
 import { createContext } from "react";
 import { useState } from "react";
 
-axios.defaults.baseURL = "http://localhost:8000"; // API
+axios.defaults.baseURL = "http://localhost/api"; // API
 axios.defaults.withCredentials = true; // esto permite enviar cookies
 axios.defaults.withXSRFToken = true;
 axios.defaults.headers.common["Accept"] = "application/json";
