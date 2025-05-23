@@ -52,7 +52,7 @@ class Rally extends Model
      * Un rally sólo tiene muchos participantes.
      */
     public function fotos(){
-        return $this->belongsToMany(FOTO::class)->withTimestamps();
+        return $this->belongsToMany(Foto::class)->withTimestamps();
     }
 
     /**

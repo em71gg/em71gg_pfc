@@ -52,4 +52,31 @@ class ApiController extends Controller
             return response()->json(['Error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Devuelve todas las fotos asociadas a un rally específico.
+     * La solicitud debe incluir el ID del rally, que será validado.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPhotosRally(Request $request)
+    {
+        // Validar que el ID del rally esté presente y exista en la base de datos
+        $request->validate([
+            'rally_id' => 'required|exists:rallies,id',
+        ]);
+
+        // Buscar el rally solicitado
+        $rally = Rally::findOrFail($request->rally_id);
+
+        // Obtener las fotos asociadas al rally, seleccionando solo los campos necesarios
+        $fotos = $rally->fotos()->select('id', 'user_id', 'uri_imagen', 'validada')->get();
+
+        // Retornar los datos en formato JSON
+        return response()->json([
+            'rally_id' => $rally->id,
+            'fotos' => $fotos,
+        ]);
+    }
 }

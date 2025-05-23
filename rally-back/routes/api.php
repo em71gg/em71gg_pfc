@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('rally' , [ApiController::class, 'createRally']);
+Route::post('photosRally', [ApiController::class, 'getPhotosRally']);//el fornt mandará un post

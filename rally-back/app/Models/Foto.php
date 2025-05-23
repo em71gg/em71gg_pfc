@@ -24,14 +24,14 @@ class Foto extends Model
      * Una foto puede estar en muchos rallies
      */
     public function rallies(){
-        $this->belongsToMany(Rally::class)->withTimestamps();
+        return $this->belongsToMany(Rally::class)->withTimestamps();
     }
 
     /**
      * Una foto tiene muchos resultados
      */
     public function resultados() {
-        $this->hasMany(Resultado::class);
+        return $this->hasMany(Resultado::class);
     }
 
     /**
