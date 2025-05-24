@@ -3,6 +3,7 @@ import HeaderComponent from '../components/HeaderComponent';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/user.context';
 import { HeaderContext } from '../context/header.context';
+import DragAndDrop from '../components/DragAndDrop';
 
 function UserPage() {
     const {user} = useContext(UserContext);
@@ -21,6 +22,8 @@ function UserPage() {
         <HeaderComponent greetings={greetings} links={links}/>
 
         {user.name && <h2>Hola {user.name}</h2>}
+
+        <DragAndDrop />
     </>
     
   )
