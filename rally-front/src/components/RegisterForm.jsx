@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import "./RegisterForm.css";
-import axios from "axios";
 import { UserContext } from "../context/user.context";
 
 function RegisterForm(props) {

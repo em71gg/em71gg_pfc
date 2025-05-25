@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Rally;
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
+    # =========================================
+    # Controllers: Rallies
+    # =========================================
+
     /**
      * Crea un nuevo rally en la base de datos.
      * Valida los datos de entrada antes de guardar.
@@ -15,7 +21,8 @@ class ApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createRally(Request $request) {
+    public function createRally(Request $request):JsonResponse
+     {
         try{
             
         $request->validate([//validaciones de datos entrantes
@@ -53,6 +60,63 @@ class ApiController extends Controller
         }
     }
 
+    # =========================================
+    # Controllers: Photos
+    # =========================================
+
+    /**
+     * Asocia una foto a un rally 
+     */
+    public function submitPhotoRoRally(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'rally_id' => 'required|exists:rallies,id',
+            'foto_id' => 'required|exists:fotos,id',
+        ]);
+
+        $rally = Rally::findOrFail($validated['rally_id']);
+
+        if (now()->greaterThanOrEqualTo(Carbon::parse($rally->fecha_inicio))) {
+            return response()->json([
+                'Message' => 'Nose puede asociar una foto cuando el rally ha comenzado'
+            ], 403);
+        }
+
+        // Evita duplicados en la tabla intermedia
+        $rally->fotos()->syncWithoutDetaching([$validated['foto_id']]);
+
+        return response()->json([
+            'message' => 'Foto presentada correctamente al rally.'
+        ], 201);
+    }
+
+    /**
+     * Retira una foto de un rallye
+     */
+    public function removePhotoRally(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'rally_id' => 'required|exists:rallies,id',
+            'foto_id' => 'required|exists:fotos,id',
+        ]);
+
+        $rally = Rally::findOrFail($validated['rally_id']);
+
+        // Validar fecha
+        if (now()->greaterThanOrEqualTo(Carbon::parse($rally->fecha_inicio))) {
+            return response()->json([
+                'message' => 'No se puede retirar una foto cuando el rally ha comenzado.'
+            ], 403);
+        }
+
+        $rally->fotos()->detach($validated['foto_id']);
+
+        return response()->json([
+            'message' => 'Foto retirada correctamente del rally.'
+        ]);
+    }
+
+
     /**
      * Devuelve todas las fotos asociadas a un rally específico.
      * La solicitud debe incluir el ID del rally, que será validado.
@@ -60,7 +124,7 @@ class ApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getPhotosRally(Request $request)
+    public function getPhotosRally(Request $request):JsonResponse
     {
         // Validar que el ID del rally esté presente y exista en la base de datos
         $request->validate([
@@ -77,6 +141,6 @@ class ApiController extends Controller
         return response()->json([
             'rally_id' => $rally->id,
             'fotos' => $fotos,
-        ]);
+        ], 200);
     }
 }

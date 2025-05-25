@@ -6,7 +6,9 @@ const PhotoContext = createContext(); //variable que aloja la función que crea 
 function PhotoProviderWrapper(props) {
     const [photos, setPhotos] = useState([]);
 
-     const getPhoto = (index) => {
+    const postPhoto =() => {}; 
+    
+    const getPhoto = (index) => {
         return axios
         .get(`https://pokeapi.co/api/v2/pokemon/${index}`, {
             withCredentials: false,
@@ -22,7 +24,7 @@ function PhotoProviderWrapper(props) {
         });
     };
     return (
-        <PhotoContext.Provider value={{photos, setPhotos, getPhoto}}>
+        <PhotoContext.Provider value={{photos, setPhotos, getPhoto, postPhoto}}>
             {props.children} 
         </PhotoContext.Provider>
     )
