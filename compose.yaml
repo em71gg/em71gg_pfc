@@ -30,11 +30,11 @@ services:
       - ./rally-back/.env
     depends_on:
       - mariadb
-    develop:
-      watch:
-        - action: sync
-          path: ./rally-back
-          target: /app
+#    develop:
+#      watch:
+#        - action: sync
+#          path: ./rally-back
+#          target: /app
     profiles: ["dev"]
     networks:
       - dev-network
@@ -64,6 +64,8 @@ services:
         - action: sync
           path: ./rally-front
           target: /app
+#    volumes:
+#      - ./rally-front:/app
     profiles: ["dev"]
     networks:
       - dev-network

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PhotoCard from "./PhotoCard";
 
 import NumberOfPhotosForm from "./NumberOfPhotosForm";
@@ -42,7 +42,7 @@ function PhotoList(props) {
       });
   };
   console.log("Photos array:", photos);
-  const photoCards = photos.map((photo) => {
+  const photoCards = useMemo( () => photos.map((photo) => {
     return (
       <PhotoCard
         key={photo.id}
@@ -51,7 +51,7 @@ function PhotoList(props) {
         selectPhoto2={props.selectPhoto2}
       ></PhotoCard>
     );
-  });
+  }), [photos]);
   return (
     <div className="">
       <NumberOfPhotosForm getPhotos={getPhotos} />

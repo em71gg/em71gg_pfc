@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { PhotoContext } from '../context/photo.context'
 
 function RallyCard() {
+  const {rally} = useContext(PhotoContext);
   return (
-    <div>RallyCard</div>
+    <div className="">
+      <h1 className="title"></h1>
+    </div>
   )
 }
 

@@ -24,4 +24,4 @@ function PhotoCard(props) {//renderizará las tarjetas de las fotos
 
 
 
-export default React.memo(PhotoCard);
+export default PhotoCard;//React.memo(PhotoCard);//

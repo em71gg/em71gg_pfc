@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -10,21 +10,27 @@ import UserPage from './pages/UserPage'
 import RallyPage from './pages/RallyPage'
 import PhotoPage from './pages/PhotoPage'
 import ErrorPage from './pages/ErrorPage'
-
+/*
+const RallyPage = lazy(() => import('./pages/RallyPage'))
+const PhotoPage = lazy(() => import('./pages/PhotoPage'))
+const ErrorPage = lazy(() => import('./pages/ErrorPage'))*/
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <Routes>
-      <Route path='/' element= { <HomePage />} />
-      <Route path='/register' element= { <Register />} />
-      <Route path='/login' element= { <Login />} />
-      <Route path='/UserPage' element= { <UserPage />} />
-      <Route path='/rally' element= { <RallyPage />} />
-      <Route path='/photo/:id' element= {<PhotoPage />} />
-      <Route path='*' element= { <ErrorPage /> } />
-      <Route path='user' element= { <UserPage /> } />
-    </Routes>
+   // <Suspense fallback={<h1>Cargando....</h1>}>
+      <Routes>
+        <Route path='/' element= { <HomePage />} />
+        <Route path='/register' element= { <Register />} />
+        <Route path='/login' element= { <Login />} />
+        <Route path='/UserPage' element= { <UserPage />} />
+        <Route path='/rally' element= { <RallyPage />} />
+        <Route path='/photo/:id' element= {<PhotoPage />} />
+        <Route path='*' element= { <ErrorPage /> } />
+        <Route path='user' element= { <UserPage /> } />
+      </Routes>
+    //</Suspense>
+    
   )
 }
 

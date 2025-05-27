@@ -59,6 +59,18 @@ class ApiController extends Controller
             return response()->json(['Error' => $e->getMessage()], 500);
         }
     }
+    /**
+     * devuelve lainformación de los rallies
+     */
+    public function getRallies() {
+        try{
+            $rallies = Rally::select('id', 'nombre', 'category', 'descripcion', 'fecha_inicio', 'fecha_fin' );
+            return response()->json($rallies, 200);
+        }catch(Exception $e){
+            return response()->json(['Error' => $e->getMessage()], 500);
+        } 
+    }
+
 
     # =========================================
     # Controllers: Photos
@@ -67,7 +79,7 @@ class ApiController extends Controller
     /**
      * Asocia una foto a un rally 
      */
-    public function submitPhotoRoRally(Request $request): JsonResponse
+    public function submitPhotoRally(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'rally_id' => 'required|exists:rallies,id',

@@ -11,6 +11,7 @@ function PhotoPage() {
   const { id } = useParams(); //valor del parametro de la ruta
   const [photo, setPhoto] = useState(null);
   const [error, setError] = useState();
+  
   useEffect(() => {
     id && callGetPhoto();
   }, [id]);//cada vez que se modifique el id se hace la llamada a la función para cargar la foto

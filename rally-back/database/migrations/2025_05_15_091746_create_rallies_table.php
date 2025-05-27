@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('propietario_id')->nullable();
+            $table->tinyInteger('validado')->default(0);//por defecto el rally no está validado.
             $table->string('nombre');
             $table->string('descripcion');
             $table->smallInteger('premio1');
