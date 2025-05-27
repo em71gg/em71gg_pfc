@@ -21,26 +21,26 @@ class ApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createRally(Request $request):JsonResponse
-     {
-        try{
-            
-        $request->validate([//validaciones de datos entrantes
-            'category_id' => 'required|integer', 
-            'propietario_id' => 'required|integer',
-            'nombre'=> 'required|string',
-            'descripcion' => 'required|string',
-            'premio1' => 'required|integer',
-            'premio2'=> 'required|integer',
-            'premio3'=> 'required|integer',
-            'limite_votos' => 'required|integer',
-            'limite_fotos' => 'required|integer',
-            'fecha_inicio'=> 'required|date_format:Y-m-d H:i:s',
-            'fecha_fin' => 'required|date_format:Y-m-d H:i:s',
+    public function createRally(Request $request): JsonResponse
+    {
+        try {
+
+            $request->validate([ //validaciones de datos entrantes
+                'category_id' => 'required|integer',
+                'propietario_id' => 'required|integer',
+                'nombre' => 'required|string',
+                'descripcion' => 'required|string',
+                'premio1' => 'required|integer',
+                'premio2' => 'required|integer',
+                'premio3' => 'required|integer',
+                'limite_votos' => 'required|integer',
+                'limite_fotos' => 'required|integer',
+                'fecha_inicio' => 'required|date_format:Y-m-d H:i:s',
+                'fecha_fin' => 'required|date_format:Y-m-d H:i:s',
             ]);
 
             $rally = new Rally();
-            $rally->category_id =$request->input('category_id');
+            $rally->category_id = $request->input('category_id');
             $rally->propietario_id = $request->input('propietario_id');
             $rally->nombre = $request->input('nombre');
             $rally->descripcion = $request->input('descripcion');
@@ -49,26 +49,29 @@ class ApiController extends Controller
             $rally->premio3 = $request->input('premio3');
             $rally->limite_votos = $request->input('limite_votos');
             $rally->limite_fotos = $request->input('limite_fotos');
-            $rally->fecha_fin= $request->input('fecha_fin');
+            $rally->fecha_fin = $request->input('fecha_fin');
             $rally->fecha_inicio = $request->input('fecha_inicio');
 
             $rally->save();
             return response()->json($rally, 201);
-
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 500);
         }
     }
     /**
      * devuelve lainformación de los rallies
      */
-    public function getRallies() {
-        try{
-            $rallies = Rally::select('id', 'nombre', 'category', 'descripcion', 'fecha_inicio', 'fecha_fin' );
+    public function getRallies()
+    {
+        try {
+            $rallies = Rally::with(['category' => function ($query) {
+                $query->select('id', 'nombre'); //necesito el id también para que laravel pueda recoger la ralación belongsto
+            }])->select('id', 'nombre', 'descripcion', 'fecha_incio', 'fecha_fin')->get();
+
             return response()->json($rallies, 200);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 500);
-        } 
+        }
     }
 
 
@@ -136,7 +139,7 @@ class ApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getPhotosRally(Request $request):JsonResponse
+    public function getPhotosRally(Request $request): JsonResponse
     {
         // Validar que el ID del rally esté presente y exista en la base de datos
         $request->validate([
