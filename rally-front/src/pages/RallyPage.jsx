@@ -14,7 +14,6 @@ import { RallyContext } from "../context/rally.context";
 function RallyPage() {
 
   const {id} = useParams();
-  
   const {user, setUser} = useContext(UserContext);
   const {links, greetings} = useContext(HeaderContext);
   const {rallies} = useContext(RallyContext);

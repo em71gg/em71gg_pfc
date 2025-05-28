@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Rally;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class ApiController extends Controller
 {
@@ -28,6 +29,7 @@ class ApiController extends Controller
             $request->validate([ //validaciones de datos entrantes
                 'category_id' => 'required|integer',
                 'propietario_id' => 'required|integer',
+                'uri_cover' => 'required|image|max:2048', // imagen requerida, máximo 2MB
                 'nombre' => 'required|string',
                 'descripcion' => 'required|string',
                 'premio1' => 'required|integer',
@@ -39,6 +41,17 @@ class ApiController extends Controller
                 'fecha_fin' => 'required|date_format:Y-m-d H:i:s',
             ]);
 
+            //Subir imagen a s3 y obtener la url.
+
+            if($request->hasFile('uri_cover')){
+                $file = $request()->file('uri_cover');
+                $path = Storage::disk('s3')->put('covers', $file);
+ 
+                $url = Storage::url($path);
+            } else {
+                return response()->json(['Error' => 'No se envió imagen'], 400);
+            }
+            //Crear rally.
             $rally = new Rally();
             $rally->category_id = $request->input('category_id');
             $rally->propietario_id = $request->input('propietario_id');
@@ -51,6 +64,7 @@ class ApiController extends Controller
             $rally->limite_fotos = $request->input('limite_fotos');
             $rally->fecha_fin = $request->input('fecha_fin');
             $rally->fecha_inicio = $request->input('fecha_inicio');
+            $rally->uri_cover = $url;
 
             $rally->save();
             return response()->json($rally, 201);
@@ -66,7 +80,7 @@ class ApiController extends Controller
         try {
             $rallies = Rally::with(['category' => function ($query) {
                 $query->select('id', 'nombre'); //necesito el id también para que laravel pueda recoger la ralación belongsto
-            }])->select('id', 'nombre', 'descripcion', 'fecha_incio', 'fecha_fin')->get();
+            }])->select('id', 'nombre', 'uri_cover', 'descripcion', 'fecha_incio', 'fecha_fin')->get();
 
             return response()->json($rallies, 200);
         } catch (Exception $e) {

@@ -10,6 +10,7 @@ import UserPage from './pages/UserPage'
 import RallyPage from './pages/RallyPage'
 import PhotoPage from './pages/PhotoPage'
 import ErrorPage from './pages/ErrorPage'
+import RallyToBePage from './pages/RallyToBePage'
 /*
 const RallyPage = lazy(() => import('./pages/RallyPage'))
 const PhotoPage = lazy(() => import('./pages/PhotoPage'))
@@ -25,6 +26,7 @@ function App() {
         <Route path='/login' element= { <Login />} />
         <Route path='/UserPage' element= { <UserPage />} />
         <Route path='/rally/:id' element= { <RallyPage />} />
+        <Route path='sign-rally/:id' element = {<RallyToBePage />} />
         <Route path='/photo/:id' element= {<PhotoPage />} />
         <Route path='*' element= { <ErrorPage /> } />
         <Route path='user' element= { <UserPage /> } />

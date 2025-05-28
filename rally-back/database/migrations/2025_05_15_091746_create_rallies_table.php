@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('rallies', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('uri_img');
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('propietario_id')->nullable();
             $table->tinyInteger('validado')->default(0);//por defecto el rally no está validado.
