@@ -44,7 +44,7 @@ function HomePage() {
 
       <h1>Mi front experimental</h1>
       <h2 className="">
-        Practicando con pokemons, Cada vez menos ¿llegaremos al final? O no...Si!
+        Practicando con pokemons, A ver ¿llegaremos al final? O no...Si!
       </h2>
        <section className="rallies">
         <h2 className="">Listado de rallies abiertos</h2>

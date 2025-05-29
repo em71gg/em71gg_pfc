@@ -12,6 +12,7 @@ class Rally extends Model
     protected $fillable = [
         'category_id', 
         'propietario_id',
+        'uri_cover',
         'nombre',
         'descripcion',
         'premio1',

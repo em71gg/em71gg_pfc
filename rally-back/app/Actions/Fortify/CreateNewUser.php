@@ -40,7 +40,7 @@ class CreateNewUser implements CreatesNewUsers
         ]);
 
         
-        $user->assignRole($input('role'));
+        $user->assignRole($input(['role']));
         return $user;
     }
 }

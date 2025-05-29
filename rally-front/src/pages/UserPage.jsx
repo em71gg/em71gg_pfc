@@ -23,6 +23,9 @@ function UserPage() {
 
         {user.name && <h2>Hola {user.name}</h2>}
 
+        {/*listar rallies apuntados y mandos para subir o bajar fotos*/}
+        {/*listar fotos en sistema apuntados*/}
+
         <DragAndDrop />
     </>
     

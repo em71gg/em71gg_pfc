@@ -15,7 +15,7 @@ function DateProviderWrapper(props) {
             hour12: false,
         };
 
-        return date.toLocaleDateString('es-ES', options).replace(',' , 'a las ');
+        return date.toLocaleDateString('es-ES', options).replace(',' , ' a las ');
     }
     return (
         <DateContext.Provider value={{formatDate}}>

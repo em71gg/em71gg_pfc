@@ -28,14 +28,14 @@ class ApiController extends Controller
 
             $request->validate([ //validaciones de datos entrantes
                 'category_id' => 'required|integer',
-                'propietario_id' => 'required|integer',
+                'propietario_id' => 'nullable|integer',
                 'uri_cover' => 'required|image|max:2048', // imagen requerida, máximo 2MB
                 'nombre' => 'required|string',
                 'descripcion' => 'required|string',
-                'premio1' => 'required|integer',
-                'premio2' => 'required|integer',
-                'premio3' => 'required|integer',
-                'limite_votos' => 'required|integer',
+                'premio1' => 'nullable|integer',
+                'premio2' => 'nullable|integer',
+                'premio3' => 'nullable|integer',
+                'limite_votos' => 'required|integer|min:1|max:10',
                 'limite_fotos' => 'required|integer',
                 'fecha_inicio' => 'required|date_format:Y-m-d H:i:s',
                 'fecha_fin' => 'required|date_format:Y-m-d H:i:s',
@@ -43,33 +43,40 @@ class ApiController extends Controller
 
             //Subir imagen a s3 y obtener la url.
 
-            if($request->hasFile('uri_cover')){
-                $file = $request()->file('uri_cover');
+            if ($request->hasFile('uri_cover')) {
+                $file = $request->file('uri_cover');
                 $path = Storage::disk('s3')->put('covers', $file);
- 
+
                 $url = Storage::url($path);
             } else {
                 return response()->json(['Error' => 'No se envió imagen'], 400);
             }
             //Crear rally.
-            $rally = new Rally();
-            $rally->category_id = $request->input('category_id');
-            $rally->propietario_id = $request->input('propietario_id');
-            $rally->nombre = $request->input('nombre');
-            $rally->descripcion = $request->input('descripcion');
-            $rally->premio1 = $request->input('premio1');
-            $rally->premio2 = $request->input('premio2');
-            $rally->premio3 = $request->input('premio3');
-            $rally->limite_votos = $request->input('limite_votos');
-            $rally->limite_fotos = $request->input('limite_fotos');
-            $rally->fecha_fin = $request->input('fecha_fin');
-            $rally->fecha_inicio = $request->input('fecha_inicio');
-            $rally->uri_cover = $url;
 
-            $rally->save();
-            return response()->json($rally, 201);
+            $rally = Rally::create([
+                'category_id' => $request->input('category_id'),
+                'propietario_id' => $request->input('propietario_id'),
+                'nombre' => $request->input('nombre'),
+                'descripcion' => $request->input('descripcion'),
+                'premio1' => $request->input('premio1'),
+                'premio2' => $request->input('premio2'),
+                'premio3' => $request->input('premio3'),
+                'limite_votos' => $request->input('limite_votos'),
+                'limite_fotos' => $request->input('limite_fotos'),
+                'fecha_fin' => $request->input('fecha_fin'),
+                'fecha_inicio' => $request->input('fecha_inicio'),
+                'uri_cover' => $url,
+            ]);
+
+            return response()->json([
+                'message' => 'Rally creado.',
+                'data' => $rally
+            ], 200);
         } catch (Exception $e) {
-            return response()->json(['Error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Error al crear el rally', 
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
     /**
@@ -80,7 +87,7 @@ class ApiController extends Controller
         try {
             $rallies = Rally::with(['category' => function ($query) {
                 $query->select('id', 'nombre'); //necesito el id también para que laravel pueda recoger la ralación belongsto
-            }])->select('id', 'nombre', 'uri_cover', 'descripcion', 'fecha_incio', 'fecha_fin')->get();
+            }])->select('id', 'nombre', 'uri_cover', 'descripcion', 'fecha_inicio', 'fecha_fin')->get();
 
             return response()->json($rallies, 200);
         } catch (Exception $e) {

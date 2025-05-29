@@ -1,31 +1,26 @@
-import { useContext, useState } from "react";
-import "./LoginForm.css";
-import { UserContext } from "../context/user.context";
+import { useState } from "react"
 
-function LoginForm(props) {
-  const {login} = useContext(UserContext); 
-  const [user, setUser] = useState({
-    name: '',
-    password: ''
+
+function RegisterParticipantOnRallyForm() {
+  const[rallyUser, setRallyUser] = useState({
+      'rally_id': '',
+      'user_id': '',
   });
-  const handleSubmit= (event) => {
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(user);
-    //llamar funcion login
+    console.log(rallyUser);
   }
 
   const handleChange = (event) =>{
     const {id, value} = event.target;
-    setUser((prevUser)=>({
+    setRallyUser((prevUser)=>({
       ...prevUser,
       [id]: value,
     }));
   }
-
-  
-  
   return (
-        <div className="login-box">
+     <div className="login-box">
           <h2>Login</h2>
           <form onSubmit={handleSubmit}>
             <fieldset>
@@ -42,4 +37,4 @@ function LoginForm(props) {
   )
 }
 
-export default LoginForm
+export default RegisterParticipantOnRallyForm

@@ -1,24 +1,32 @@
-import { useContext, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { RallyContext } from "../context/rally.context";
 import { HeaderContext } from "../context/header.context";
 import { UserContext } from "../context/user.context";
 import HeaderComponent from "../components/HeaderComponent";
+import DisplayRallyInfoToParticipant from "../components/DisplayRallyInfoToParticipant";
 
-function RallyToBePage() {
+function RallyToBePage(props) {
+  
   const { user, setUser } = useContext(UserContext);
   const { id } = useParams();
-  const { rallies } = useContext(RallyContext);
+  const { rallies, registerParticipantOnRally, registered, setRegistered } = useContext(RallyContext);
   const { links, greetings } = useContext(HeaderContext);
-  const [register, setRegister] = useState(false);
-  
+  //limpia set registered pa ra que no haya error en la carga de la página 
+  useEffect(() =>{
+    return () => {
+      setRegistered(false);
+    }
+  }, []);
 
+  
   const actualRally = rallies.find((rally) => rally.id === parseInt(id)); //useParams siempre devuelve un string, por eso parseInt(id)
   console.log("El Rally es :", actualRally);
   if (!actualRally) {
     console.log("No existe el rally");
     return <Navigate to={"/error"} />;
   }
+
   if (!user.isLoggedIn) return <Navigate to={"/error"} />;
   console.log(
     `El valor de isLoggedin es: ${user.isLoggedIn}, y el de name: ${user.name}`
@@ -35,14 +43,23 @@ function RallyToBePage() {
           <h2 className="">
             Despliegue del rally con id {id} y nombre {actualRally.nombre}
           </h2>
-          <h3 className="">
-            Descripcion del rally
-          </h3>
-          <p className="">{actualRally.descripcion}</p>
+         
+          
+          
+        </section>
+        <section className="" id="container">
+          <DisplayRallyInfoToParticipant rally={actualRally}></DisplayRallyInfoToParticipant>
         </section>
         <section className="">
-          <button onClick={() => setRegister(!register)}>Registarse</button>
-          {register && <p className="">quiero registrarme</p>}
+          <button onClick={() => registerParticipantOnRally(actualRally.id, user.id)}>
+            Registrarse
+          </button>
+          {registered && (
+            <>
+              <p className="">Registrado en el Rally {actualRally.nombre}</p>{" "}
+              <Link to={`/user/${user.id}`}>Ir a pagina personal</Link>
+            </>
+          )}
         </section>
       </main>
     </>

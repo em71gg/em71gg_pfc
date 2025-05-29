@@ -10,8 +10,10 @@ axios.defaults.headers.common["Accept"] = "application/json";
 const UserContext = createContext();
 
 function UserProviderWrapper(props) {
+  //variable del profile del usuario
   const [user, setUser] = useState({
     //el objeto lo obtendré de la lógica del login
+    id: "1",
     name: "Pedro",
     email: "",
     password: "",
@@ -50,11 +52,46 @@ function UserProviderWrapper(props) {
         }
       });
   };
+
+  const login = async (userData) => {
+    try {
+      // 1. Obtener el CSRF cookie
+      await axios.get('/sanctum/csrf-cookie');
+
+      // 2. Enviar solicitud de login
+      await axios.post('/login', userData, {
+        headers: { Accept: "application/json" },
+      });
+
+      // 3. Obtener el usuario autenticado
+      const dataUser = await axios.get('/user');
+      setUser(dataUser);
+
+      return {
+        success: true,
+        user,
+      };
+    } catch (error) {
+      if (error.response && error.response.data.errors) {
+        return {
+          success: false,
+          errors: error.response.data.errors,
+        };
+      } else {
+        return {
+          success: false,
+          errors: [error.message],
+        };
+      }
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser, register }}>
+    <UserContext.Provider value={{ user, setUser, register, login }}>
       {props.children}
     </UserContext.Provider>
   );
 }
 
 export { UserContext, UserProviderWrapper };
+

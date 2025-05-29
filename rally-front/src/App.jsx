@@ -26,10 +26,10 @@ function App() {
         <Route path='/login' element= { <Login />} />
         <Route path='/UserPage' element= { <UserPage />} />
         <Route path='/rally/:id' element= { <RallyPage />} />
-        <Route path='sign-rally/:id' element = {<RallyToBePage />} />
+        <Route path='/sign-rally/:id' element = {<RallyToBePage />} />
         <Route path='/photo/:id' element= {<PhotoPage />} />
         <Route path='*' element= { <ErrorPage /> } />
-        <Route path='user' element= { <UserPage /> } />
+        <Route path='/user/:id' element= { <UserPage /> } />
       </Routes>
     //</Suspense>
     
