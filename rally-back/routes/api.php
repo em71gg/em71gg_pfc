@@ -10,7 +10,8 @@ Route::get('/user', function (Request $request) {
 
 Route::post('rally' , [ApiController::class, 'createRally']);
 Route::get('rallies', [ApiController::class, 'getRallies']);
-
-Route::post('photosRally', [ApiController::class, 'getPhotosRally']);//el front mandará un post
+Route::get('user-rallies', [ApiController::class, 'getUserRallies']);
+Route::get('/{id}/photosRally', [ApiController::class, 'getPhotosRally']);//el front mandará un post
+Route::post('create-photo', [ApiController::class, 'createPhoto']);
 Route::post('submit-photo', [ApiController::class, 'submitPhotoToRally']);
 Route::post('remove-photo', [ApiController::class, 'removePhotoToRally']);

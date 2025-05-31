@@ -1,11 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "./DragAndDrop.css"; // o usa Tailwind para estilos rápidos
+import { UserContext } from "../context/user.context";
+import { PhotoContext } from "../context/photo.context";
 
 function DragAndDrop(props) {
 
   useEffect(() =>{
     //pendiente de lógica de carga de datos del rally_id del Numero de fotos5
   }, []);
+  const {rally_id, onSuccess } = props;
+  const {user} = useContext(UserContext);//de aqui sacamos user_id para el upload user.id
+  const {uploadPhoto, registerPhoto} = useContext(PhotoContext);
   const [file, setFile] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef();
@@ -37,16 +42,44 @@ function DragAndDrop(props) {
     setFile(Array.from(selectedFile));
   };
 
-  const handleUpload = (event) => {
+  const handleUpload = async (event) => {
     event.preventDefault();
+
+    if(!file.length || !name) {
+      alert('Debes seleccionar una imagen y escribir un título para la misma.')
+      return;
+    }
+
+    try {
+      //crear foto y almacenar imagen.
+      const getPhotoId = await uploadPhoto({
+        user_id: user.id,
+        nombre: name,
+        file: file[0],
+      });
+    }catch(error){
+      alert('Ocurrió un error. Info por consola');
+    };
+
+    //Registrar foto en rally
+    await registerPhoto({
+      rally_id: rally_id,
+      foto_id: getPhotoId,
+    });
+
+    alert('Foto creada y registrada correctamente');
+    handleCancel();//limpia el formulario.
+    onSuccess?.();//uso el prop que setea displayDragAndDrop a false.
+    /*
     const formData = new FormData();
     formData.append("name", name);
     (file.length >0) && (formData.append('file', file[0]))
     for (let [key, value] of formData.entries()) {
       console.log('Uploading.... ',`${key}:`, value);
     }
-    //console.log("Uploading...", formData);
-    // Aquí falta la subida con axios
+    console.log("Uploading...", formData);
+    */
+
   };
 
   const handleCancel = () => {
@@ -106,63 +139,3 @@ function DragAndDrop(props) {
 
 export default DragAndDrop;
 
-/*import { useRef, useState } from "react";
-import "./DragAndDrop.css";
-
-function DragAndDrop() {
-  const [file, setFiles] = useState([]);
-  const inputRef = useRef();
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const droppedFiles = event.dataTransfer.file;
-    setFiles(Array.from(droppedFiles));
-  };
-
-  const handleUpload = () => {
-    console.log("Uploading: ", file);
-    // Aquí va tu lógica de subida al servidor
-  };
-
-  if (file.length > 0)
-    return (
-      <div className="uploads">
-        <ul>
-          {file.map((file, index) => (
-            <li key={index}>{file.name}</li>
-          ))}
-        </ul>
-        <div className="actions">
-          <button onClick={() => setFiles([])}>Cancelar</button>
-          <button onClick={handleUpload}>Subir</button>
-        </div>
-      </div>
-    );
-
-  return (
-    <div
-      className="dropzone"
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-    >
-      <h3>Suelte el archivo</h3>
-      <h3>O</h3>
-      <input
-        type="file"
-        multiple
-        hidden
-        accept="image/*"
-        ref={inputRef}
-        onChange={(event) => setFiles(Array.from(event.target.file))}
-      />
-      <button onClick={() => inputRef.current.click()}>Seleccione</button>
-    </div>
-  );
-}
-
-export default DragAndDrop;
-*/

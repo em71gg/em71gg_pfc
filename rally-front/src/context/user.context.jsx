@@ -13,7 +13,7 @@ function UserProviderWrapper(props) {
   //variable del profile del usuario
   const [user, setUser] = useState({
     //el objeto lo obtendré de la lógica del login
-    id: "1",
+    id: 1,
     name: "Pedro",
     email: "",
     password: "",
@@ -64,8 +64,15 @@ function UserProviderWrapper(props) {
       });
 
       // 3. Obtener el usuario autenticado
-      const dataUser = await axios.get('/user');
-      setUser(dataUser);
+      const {data} = await axios.get('/user');
+      setUser({
+        id: data.id,
+        name:data.name,
+        email: data.email,
+        surname: data.surname,
+        nickname: data.nickname,
+        role:data.role,
+      });
 
       return {
         success: true,
