@@ -6,11 +6,15 @@ import { HeaderContext } from '../context/header.context';
 
 function Register() {
   const {greetings, links} = useContext(HeaderContext);
+
+  const handleUserInfo = (userData) =>{
+    console.log('Info del usuario registrado: ', userData);
+  }
   
   return (
     <>
     <HeaderComponent greetings={greetings} links={links}/>
-    <RegisterForm />
+    <RegisterForm handleUserInfo={handleUserInfo} />
     </>
   )
 }

@@ -16,7 +16,7 @@ function Login() {
     <HeaderComponent greetings={greetings} links={links}/>
     <LoginForm /> {/*aquí debe definirse user a traves de setUser*/}
 
-    <Link to={`/user/${user.id}`}>Ir a página de usuario</Link>
+    <Link to={`/user/${user.id}`}>Ir a página de usuario</Link>{/*Esto debería cambiarse por navegar a pagina de ususario condo logn exitoso*/}
     </>
   )
 }

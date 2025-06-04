@@ -1,10 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import "./RegisterForm.css";
 import { UserContext } from "../context/user.context";
+import { useNavigate } from "react-router-dom";
 
 function RegisterForm(props) {
   const {register} = useContext(UserContext);
-  const [user, setUser] = useState({
+  const navigate = useNavigate();
+  const [successfullRegister, setSuccessfullRegister] = useState("");
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
@@ -14,7 +17,7 @@ function RegisterForm(props) {
     role: "",
   });
 
-  const { password, cpassword } = user;
+  const { password, cpassword } = formData;
   const [psswMatch, setPsswMatch] = useState(true);
   useEffect(() => {
     setPsswMatch(password === cpassword);
@@ -22,7 +25,7 @@ function RegisterForm(props) {
 
   const handleChange = (event) => {
     const { id, value } = event.target;
-    setUser((prevUser) => ({
+    setFormData((prevUser) => ({
       ...prevUser,
       [id]: value,
     }));
@@ -32,33 +35,36 @@ function RegisterForm(props) {
     event.preventDefault();
     if (
       !psswMatch ||
-      !user.name ||
-      !user.email ||
-      !user.password ||
-      !user.cpassword
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.cpassword
     ) {
       alert("Rellene los campos obligatorios");
       return;
     }
 
     
-    props.handleUserInfo(user);
+    props.handleUserInfo(formData);
 
     const userData = {
-      name: user.name,
-      email: user.email,
-      password: user.password,
-      password_confirmation: user.cpassword,
-      surname: user.surname,
-      nickname: user.nickname,
-      role: user.role,
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      password_confirmation: formData.cpassword,
+      surname: formData.surname,
+      nickname: formData.nickname,
+      role: formData.role,
     };
 
     register(userData)
     .then((result) =>{
       if(result.success){
         console.log('usuario registrado', result.data);
-        //redirigir Login o recibir correo confirmación
+        setSuccessfullRegister('Ha sido registrado como usuario, será redirigido a Login.')
+        setTimeout(() => {
+             navigate('/login');
+        }, 2000);
       }else{
         console.error('Errores:', result.errors);
       }
@@ -107,12 +113,22 @@ function RegisterForm(props) {
           <label htmlFor="role" className="role">
             Role
           </label>
+          <select id="role" onChange={handleChange}>
+            <option value="">Seleccione un rol</option>
+            <option value="administrador">Administrador</option>
+            <option value="gestor">Gestor</option>
+            <option value="creador">Creador</option>
+            <option value="participante">Participante</option>
+          </select>
+
+          {/*
           <input
             type="text"
             className="role"
             id="role"
             onChange={handleChange}
           />
+          */}
         </fieldset>
         <fieldset className="">
           <label htmlFor="email">Email</label>
@@ -146,6 +162,7 @@ function RegisterForm(props) {
         </fieldset>
         <button type="submit">Registrarse</button>
       </form>
+     {successfullRegister && <div className="">{successfullRegister}</div>}
     </div>
   );
 }

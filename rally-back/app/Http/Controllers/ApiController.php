@@ -244,4 +244,16 @@ class ApiController extends Controller
             'fotos' => $fotos,
         ], 200);
     }
+
+    public function getPhotosRallyUser($rally_id, $user_id): JsonResponse
+    {
+        $rally = Rally::findOrFail($rally_id);
+
+        $fotos = $rally->fotos('id', 'user_id', 'uri_imagen', 'validada')->where('user_id', $user_id)->get();
+         return response()->json([
+            'rally_id' => $rally->id,
+            'fotos' => $fotos,
+        ], 200);
+
+    }
 }

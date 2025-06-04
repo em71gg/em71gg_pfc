@@ -14,7 +14,7 @@ vendor
 docker-compose.override.yml
 
 # Archivos de entorno (solo si ya los pasas con `env_file`)
-.env
+#.env
 
 # Ignorar pruebas, solo en producción
 /tests/

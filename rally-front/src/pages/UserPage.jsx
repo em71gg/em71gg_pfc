@@ -30,7 +30,8 @@ function UserPage() {
       
     });
 
-    console.log(user);
+    console.log('Usuario en UserPage', user);
+    console.log(rallies);
     if(!user.id) return <Navigate to={'/error'} />;
     
     const login = (userInfo) => {

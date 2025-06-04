@@ -11,7 +11,7 @@ function LoginForm(props) {
   const handleSubmit= (event) => {
     event.preventDefault();
     console.log(user);
-    //llamar funcion login
+    //llamar funcion login y si exitoso redirigir a página de usuario
   }
 
   const handleChange = (event) =>{

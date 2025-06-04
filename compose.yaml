@@ -3,6 +3,7 @@
 services:
   # Laravel Producción
   laravel-prod:
+    container_name: rally-back-prod
     build:
       context: ./rally-back
       dockerfile: Dockerfile
@@ -19,6 +20,7 @@ services:
 
   # Laravel Desarrollo
   laravel-dev:
+    container_name: rally-back-dev
     user: root
     build:
       context: ./rally-back
@@ -41,6 +43,7 @@ services:
 
   # React Producción
   react-prod:
+    container_name: rally-front-prod
     build:
       context: ./rally-front
       dockerfile: Dockerfile
@@ -53,6 +56,7 @@ services:
 
   # React Desarrollo
   react-dev:
+    container_name: rally-front-dev
     build:
       context: ./rally-front
       dockerfile: Dockerfile.dev
@@ -100,6 +104,7 @@ services:
 
   # MariaDB (compartida)
   mariadb:
+    container_name: mariadb
     image: mariadb:11
     restart: always
     environment:
@@ -109,14 +114,15 @@ services:
       MYSQL_PASSWORD: pepito01
     volumes:
       - mariadb_data:/var/lib/mysql
+      - ./mysql/my_custom.cnf:/etc/mysql/conf.d/my_custom.cnf:ro
     ports:
       - "3306:3306"
     networks:
       - dev-network
       - prod-network
 
-  # Adminer (opcional)
   adminer:
+    container_name: adminer-rally
     image: adminer
     restart: always
     ports:

@@ -7,8 +7,10 @@ import { HeaderContext } from "../context/header.context";
 import { RallyContext } from "../context/rally.context";
 import RallyCard from "../components/RallyCard";
 import RallyCardToBe from "../components/RallyCardToBe";
+import axios from 'axios';
 
 function HomePage() {
+
   const { greetings, links } = useContext(HeaderContext);
   const { rallies, setRallies } = useContext(RallyContext);
   const now= new Date();
